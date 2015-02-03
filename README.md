@@ -1,2 +1,2 @@
-# AndroidLib for android version v14
-AndroidLib
+# AndroidLib
+AndroidLib for android version v14
