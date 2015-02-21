@@ -2,13 +2,14 @@ package uz.support.v14.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import uz.support.v14.R;
-import uz.support.v14.common.fragment.ContentFragment;
-import uz.support.v14.common.mold.SupportActivity;
+import uz.support.v14.app.ContentFragment;
+import uz.support.v14.app.SupportActivity;
 import uz.support.v14.util.ViewSetup;
 
 public class DemoContentFragment extends ContentFragment {
@@ -23,12 +24,15 @@ public class DemoContentFragment extends ContentFragment {
     }
 
     @Override
-    protected void onCreateActivity(Bundle bundle) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setToolbarColor(getResources().getColor(R.color.red));
         vsRoot.button(R.id.btn_content).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DemoIndexFragment.open(getActivity());
             }
         });
+
     }
 }

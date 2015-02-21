@@ -1,4 +1,4 @@
-package uz.support.v14.common.mold;
+package uz.support.v14.app;
 
 
 import android.app.Activity;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -18,20 +19,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import uz.support.v14.R;
-import uz.support.v14.common.fragment.ContentFragment;
-import uz.support.v14.common.fragment.IndexContentFragment;
-import uz.support.v14.common.fragment.SupportFragment;
-import uz.support.v14.common.menu.SupportOptionMenu;
 import uz.support.v14.lib.slidingmenu.SlidingMenu;
 import uz.support.v14.lib.slidingmenu.app.SlidingFragmentActivity;
 import uz.support.v14.widget.DrawerArrow;
 
-public class SupportActivity extends SlidingFragmentActivity {
+public final class SupportActivity extends SlidingFragmentActivity {
 
     //----------------------------------------------------------------------------------------------
 
-    private static final String ARG_CLASS = "mac";
-    private static final String ARG_BUNDLE = "mab";
+    private static final String ARG_CLASS = "uz.support.v14.app.ma.class";
+    private static final String ARG_BUNDLE = "uz.support.v14.app.ma.bundle";
+
+    private static final String ARG_DATA = "uz.support.v14.app.ma.data";
+    private static final String ARG_FLIP = "uz.support.v14.app.ma.flip";
+    private static final String ARG_IS_MENU_SHOW = "uz.support.v14.app.ma.menu";
+    private static final String ARG_IS_CONTENT = "uz.support.v14.app.ma.content";
 
     //----------------------------------------------------------------------------------------------
 
@@ -59,7 +61,9 @@ public class SupportActivity extends SlidingFragmentActivity {
     private boolean isMenuShow = false;
     private boolean flip = true;
     private DrawerArrow drawerArrow;
-    private Object contentResult;
+    private Object popContentResult;
+    private Parcelable data;
+    private Toolbar toolbar;
 
     //----------------------------------------------------------------------------------------------
 
@@ -69,7 +73,7 @@ public class SupportActivity extends SlidingFragmentActivity {
         setBehindContentView(R.layout.s_index);
         setContentView(R.layout.s_content);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         onPrepareMenu();
 
@@ -85,8 +89,14 @@ public class SupportActivity extends SlidingFragmentActivity {
         sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
         sm.setFadeDegree(0.35f);
         sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-
-        init();
+        if (savedInstanceState != null) {
+            data = savedInstanceState.getParcelable(ARG_DATA);
+            flip = savedInstanceState.getBoolean(ARG_FLIP);
+            isContent = savedInstanceState.getBoolean(ARG_IS_CONTENT);
+            isMenuShow = savedInstanceState.getBoolean(ARG_IS_MENU_SHOW);
+        } else {
+            init();
+        }
 
         setOnSlidingListener(new SlidingMenu.OnSlidingListener() {
             @Override
@@ -120,6 +130,20 @@ public class SupportActivity extends SlidingFragmentActivity {
         if (isContent) {
             setDrawableFlipper(true, (float) 1.0);
         }
+        setContent(isContent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(ARG_FLIP, flip);
+        outState.putParcelable(ARG_DATA, data);
+        outState.putBoolean(ARG_IS_CONTENT, isContent);
+        outState.putBoolean(ARG_IS_MENU_SHOW, isMenuShow);
+    }
+
+    public Toolbar getToolbar() {
+        return toolbar;
     }
 
     public void setDrawableFlipper(boolean flipped, float offset) {
@@ -130,12 +154,12 @@ public class SupportActivity extends SlidingFragmentActivity {
 
     private void init() {
         Fragment fragment = createFragment();
-        if (fragment instanceof IndexContentFragment) {
-            isContent = false;
+        if (fragment instanceof IndexFragment) {
             openIndexContent(fragment);
+            isContent = false;
         } else if (fragment instanceof ContentFragment) {
-            isContent = true;
             replaceContent((ContentFragment) fragment);
+            isContent = true;
         }
     }
 
@@ -144,7 +168,7 @@ public class SupportActivity extends SlidingFragmentActivity {
     protected void openIndexContent(Fragment f) {
         setFragment(R.id.index_frame, f);
         setSlidingActionBarEnabled(true);
-        sm.showMenu();
+        showIndexContent();
     }
 
     private void setFragment(int resId, Fragment fragment) {
@@ -156,31 +180,23 @@ public class SupportActivity extends SlidingFragmentActivity {
 
     //----------------------------------------------------------------------------------------------
 
-    protected void setIndexGone() {
-        Display d = getWindowManager().getDefaultDisplay();
-        sm.setBehindOffsetInt(d.getWidth());
-    }
-
-    protected void setIndexVisible() {
-        sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
-    }
-
     public void showIndexContent() {
         sm.showMenu();
     }
 
     public void setContent(boolean isContent) {
         if (isContent) {
-            setIndexGone();
+            Display d = getWindowManager().getDefaultDisplay();
+            sm.setBehindOffsetInt(d.getWidth());
         } else {
-            setIndexVisible();
+            sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
         }
     }
 
     //----------------------------------------------------------------------------------------------
 
-    public IndexContentFragment getIndexContent() {
-        return (IndexContentFragment) getSupportFragmentManager().findFragmentById(R.id.index_frame);
+    public IndexFragment getIndexContent() {
+        return (IndexFragment) getSupportFragmentManager().findFragmentById(R.id.index_frame);
     }
 
     public ContentFragment getContentFragment() {
@@ -194,12 +210,12 @@ public class SupportActivity extends SlidingFragmentActivity {
     //----------------------------------------------------------------------------------------------
 
     public void popContent() {
-        getSupportFragmentManager().popBackStack();
+        popContent(null);
     }
 
-    public void popContent(Object contentResult) {
-        this.contentResult = contentResult;
-        popContent();
+    public void popContent(Object popContentResult) {
+        this.popContentResult = popContentResult;
+        getSupportFragmentManager().popBackStack();
     }
 
     //----------------------------------------------------------------------------------------------
@@ -253,13 +269,21 @@ public class SupportActivity extends SlidingFragmentActivity {
         }
         showContent();
         if (getOptionMenuFragment() != null) {
-             getOptionMenuFragment().hide();
+            getOptionMenuFragment().hide();
         }
+        onPrepareMenu();
         isMenuShow = false;
     }
 
     protected void onPrepareMenu() {
-        setFragment(R.id.content_menu, SupportOptionMenu.newInstance());
+        ContentFragment content = getContentFragment();
+        if (content != null) {
+            SupportOptionMenu optionMenu = content.getOptionMenu();
+            if (optionMenu != null) {
+                setFragment(R.id.content_menu, content.getOptionMenu());
+            }
+        }
+
     }
 
     //----------------------------------------------------------------------------------------------
@@ -288,15 +312,18 @@ public class SupportActivity extends SlidingFragmentActivity {
     @Override
     public boolean onKeyUp(int key, KeyEvent event) {
         if (KeyEvent.KEYCODE_MENU == key) {
-            int visible = SupportOptionMenu.SHOW;
-            if (isMenuShow) {
-                visible = SupportOptionMenu.HIDE;
-                isMenuShow = false;
-            } else {
-                isMenuShow = true;
+            SupportOptionMenu optionMenu = getOptionMenuFragment();
+            if (optionMenu != null) {
+                int visible = SupportOptionMenu.SHOW;
+                if (isMenuShow) {
+                    visible = SupportOptionMenu.HIDE;
+                    isMenuShow = false;
+                } else {
+                    isMenuShow = true;
+                }
+                optionMenu.visibility(visible);
+                return true;
             }
-            getOptionMenuFragment().visibility(visible);
-            return true;
         }
         return super.onKeyUp(key, event);
     }
@@ -318,20 +345,12 @@ public class SupportActivity extends SlidingFragmentActivity {
         SupportFragment contentFragment = getContentFragment();
         if (contentFragment == that) {
             try {
-                if (contentResult != null) {
-                    contentFragment.onAboveContentPopped(contentResult);
+                if (popContentResult != null) {
+                    contentFragment.onAboveContentPopped(popContentResult);
                 }
             } finally {
-                contentResult = null;
+                popContentResult = null;
             }
-        }
-    }
-
-    public void onContentDestroy(SupportFragment that) {
-        ContentFragment contentFragment = getContentFragment();
-        if (contentFragment == that) {
-            contentFragment.vsRoot = null;
-            System.gc();
         }
     }
 }

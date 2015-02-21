@@ -1,20 +1,18 @@
-package uz.support.v14.common.fragment;
+package uz.support.v14.app;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import uz.support.v14.util.SupportUtil;
 import uz.support.v14.util.ViewSetup;
 
-public abstract class IndexContentFragment extends SupportFragment {
+public abstract class ContentFragment extends SupportFragment {
 
     protected abstract ViewSetup onCreateViewSetup(LayoutInflater inflater, ViewGroup container);
-
-    protected abstract void onCreateActivity(Bundle bundle);
-
-    protected abstract ContentFragment onCreateContent();
 
     public ViewSetup vsRoot;
 
@@ -27,14 +25,18 @@ public abstract class IndexContentFragment extends SupportFragment {
     }
 
     @Override
-    public final void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        onCreateActivity(savedInstanceState);
-        make(onCreateContent());
+    public void onStart() {
+        super.onStart();
+        SupportActivity activity = (SupportActivity) getActivity();
+        activity.onContentStarted(this);
     }
 
-    public void make(ContentFragment contentFragment) {
-        replaceContent(contentFragment);
+    protected void setToolbarColor(int color) {
+        Toolbar toolbar = SupportUtil.getSupportActivity(getActivity()).getToolbar();
+        toolbar.setBackgroundColor(color);
     }
 
+    public SupportOptionMenu getOptionMenu() {
+        return null;
+    }
 }

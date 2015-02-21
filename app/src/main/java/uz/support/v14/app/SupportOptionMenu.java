@@ -1,22 +1,15 @@
-package uz.support.v14.common.menu;
+package uz.support.v14.app;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.*;
-import android.widget.FrameLayout;
 
 import uz.support.v14.R;
-import uz.support.v14.common.mold.Command;
-import uz.support.v14.common.mold.SupportActivity;
-import uz.support.v14.util.SupportUtil;
+import uz.support.v14.common.Command;
 import uz.support.v14.util.ViewSetup;
 
-public class SupportOptionMenu extends Fragment {
-
-    public static SupportOptionMenu newInstance() {
-        return new SupportOptionMenu();
-    }
+public abstract class SupportOptionMenu extends Fragment {
 
     public static int SHOW = 1;
     public static int HIDE = 2;

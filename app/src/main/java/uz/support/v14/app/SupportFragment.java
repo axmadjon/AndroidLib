@@ -1,4 +1,4 @@
-package uz.support.v14.common.fragment;
+package uz.support.v14.app;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -68,36 +68,46 @@ public abstract class SupportFragment extends Fragment {
     //**********************************************************************************************
 
     protected final void replaceContent(Class<? extends ContentFragment> cls) {
-        SupportUtil.replaceContent(getActivity(), (ContentFragment) newInstance(cls));
+        replaceContent((ContentFragment) newInstance(cls));
     }
 
     protected final void addContent(Class<? extends ContentFragment> cls) {
-        SupportUtil.addContent(getActivity(), (ContentFragment) newInstance(cls));
+        addContent((ContentFragment) newInstance(cls));
     }
 
     protected final void openContent(Class<? extends ContentFragment> cls) {
-        SupportUtil.openContent(getActivity(), (ContentFragment) newInstance(cls));
+        openContent((ContentFragment) newInstance(cls));
+    }
+
+    //**********************************************************************************************
+
+    protected final void replaceContent(ContentFragment content, Bundle args) {
+        content.setArguments(args);
+        replaceContent(content);
+    }
+
+    protected final void addContent(ContentFragment content, Bundle args) {
+        content.setArguments(args);
+        addContent(content);
+    }
+
+    protected final void openContent(ContentFragment content, Bundle args) {
+        content.setArguments(args);
+        openContent(content);
     }
 
     //**********************************************************************************************
 
     protected final void replaceContent(Class<? extends ContentFragment> cls, Bundle args) {
-        ContentFragment contentFragment = (ContentFragment) newInstance(cls);
-        contentFragment.setArguments(args);
-        SupportUtil.replaceContent(getActivity(), contentFragment);
+        replaceContent((ContentFragment) newInstance(cls), args);
     }
 
     protected final void addContent(Class<? extends ContentFragment> cls, Bundle args) {
-        ContentFragment contentFragment = (ContentFragment) newInstance(cls);
-        contentFragment.setArguments(args);
-
-        SupportUtil.addContent(getActivity(), contentFragment);
+        addContent((ContentFragment) newInstance(cls), args);
     }
 
     protected final void openContent(Class<? extends ContentFragment> cls, Bundle args) {
-        ContentFragment contentFragment = (ContentFragment) newInstance(cls);
-        contentFragment.setArguments(args);
-        SupportUtil.openContent(getActivity(), contentFragment);
+        openContent((ContentFragment) newInstance(cls), args);
     }
 
     //**********************************************************************************************

@@ -14,7 +14,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".common.mold.SupportActivity" />
+        <activity android:name=".app.SupportActivity" />
 
     </application>
 </manifest>

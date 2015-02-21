@@ -2,12 +2,15 @@ package uz.support.v14.util;
 
 import android.app.Activity;
 
-import uz.support.v14.common.fragment.ContentFragment;
-import uz.support.v14.common.fragment.IndexContentFragment;
-import uz.support.v14.common.fragment.SupportFragment;
-import uz.support.v14.common.mold.SupportActivity;
+import uz.support.v14.app.ContentFragment;
+import uz.support.v14.app.IndexFragment;
+import uz.support.v14.app.SupportFragment;
+import uz.support.v14.app.SupportActivity;
 
 public final class SupportUtil {
+
+    private SupportUtil() {
+    }
 
     public static SupportActivity getSupportActivity(Activity a) {
         return (SupportActivity) a;
@@ -17,7 +20,7 @@ public final class SupportUtil {
         return getSupportActivity(activity).getContentFragment();
     }
 
-    public static IndexContentFragment getIndexFragment(Activity activity) {
+    public static IndexFragment getIndexFragment(Activity activity) {
         return getSupportActivity(activity).getIndexContent();
     }
 
@@ -31,8 +34,5 @@ public final class SupportUtil {
 
     public static void openContent(Activity activity, ContentFragment cf) {
         getSupportActivity(activity).openContent(cf);
-    }
-
-    private SupportUtil() {
     }
 }
