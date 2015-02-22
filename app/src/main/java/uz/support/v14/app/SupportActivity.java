@@ -127,9 +127,6 @@ public final class SupportActivity extends SlidingFragmentActivity {
                 }
             }
         });
-        if (isContent) {
-            setDrawableFlipper(true, (float) 1.0);
-        }
         setContent(isContent);
     }
 
@@ -140,6 +137,14 @@ public final class SupportActivity extends SlidingFragmentActivity {
         outState.putParcelable(ARG_DATA, data);
         outState.putBoolean(ARG_IS_CONTENT, isContent);
         outState.putBoolean(ARG_IS_MENU_SHOW, isMenuShow);
+    }
+
+    public Parcelable getData() {
+        return data;
+    }
+
+    public void setData(Parcelable data) {
+        this.data = data;
     }
 
     public Toolbar getToolbar() {
@@ -165,7 +170,7 @@ public final class SupportActivity extends SlidingFragmentActivity {
 
     //----------------------------------------------------------------------------------------------
 
-    protected void openIndexContent(Fragment f) {
+    private void openIndexContent(Fragment f) {
         setFragment(R.id.index_frame, f);
         setSlidingActionBarEnabled(true);
         showIndexContent();
@@ -184,12 +189,18 @@ public final class SupportActivity extends SlidingFragmentActivity {
         sm.showMenu();
     }
 
+    public void setContent() {
+        setContent(this.isContent);
+    }
+
     public void setContent(boolean isContent) {
         if (isContent) {
             Display d = getWindowManager().getDefaultDisplay();
             sm.setBehindOffsetInt(d.getWidth());
+            setDrawableFlipper(true, (float) 1.0);
         } else {
             sm.setBehindOffsetRes(R.dimen.sliding_menu_offset);
+            setDrawableFlipper(false, (float) 0.0);
         }
     }
 
@@ -209,10 +220,6 @@ public final class SupportActivity extends SlidingFragmentActivity {
 
     //----------------------------------------------------------------------------------------------
 
-    public void popContent() {
-        popContent(null);
-    }
-
     public void popContent(Object popContentResult) {
         this.popContentResult = popContentResult;
         getSupportFragmentManager().popBackStack();
@@ -229,6 +236,7 @@ public final class SupportActivity extends SlidingFragmentActivity {
     }
 
     public void openContent(ContentFragment content) {
+        this.isContent = true;
         setContent(true);
         addContent(content);
     }
@@ -347,6 +355,11 @@ public final class SupportActivity extends SlidingFragmentActivity {
             try {
                 if (popContentResult != null) {
                     contentFragment.onAboveContentPopped(popContentResult);
+                }
+                if (contentFragment instanceof ContentFragment) {
+                    ContentFragment cf = (ContentFragment) contentFragment;
+                    this.isContent = cf.isContent();
+                    setContent();
                 }
             } finally {
                 popContentResult = null;
