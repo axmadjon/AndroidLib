@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#ffffff</color>
-    <color name="project_color">#009688</color>
+    <color name="app_color">#009688</color>
     <color name="background">#ffe7e7e7</color>
     <color name="red">#ffe70000</color>
     <color name="blue">#ff0003e7</color>

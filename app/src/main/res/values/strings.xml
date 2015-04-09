@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Support</string>
-    <string name="ok">ok</string>
+    <string name="ok">OK</string>
+    <string name="please_wait">Пожалуйста подождите</string>
+    <string name="loading">Загрузка…</string>
 </resources>

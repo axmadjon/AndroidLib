@@ -12,7 +12,7 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
 
     protected final Context context;
     protected final LayoutInflater inflater;
-    protected MyArray<E> items;
+    protected MyArray<E> items = MyArray.emptyArray();
     protected MyArray<E> filteredItems = MyArray.emptyArray();
 
     private ItemFilter itemFilter;
@@ -22,11 +22,9 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
     public MyAdapter(Context context) {
         this.context = context;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.items = MyArray.emptyArray();
-        this.filteredItems = getFilteredItems();
     }
 
-    private MyArray<E> getFilteredItems() {
+    private MyArray<E> filterItems() {
         MyPredicate<E> predicate = MyPredicate.and(predicateSearch, predicateOthers);
         if (predicate != null) {
             return items.filter(predicate);
@@ -36,13 +34,20 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
     }
 
     public void setItems(MyArray<E> items) {
+        if (items == null) {
+            throw new NullPointerException("items is null");
+        }
         this.items = items;
-        this.filteredItems = getFilteredItems();
+        this.filteredItems = filterItems();
         notifyDataSetChanged();
     }
 
     public MyArray<E> getItems() {
         return this.items;
+    }
+
+    public MyArray<E> getFilteredItems() {
+        return this.filteredItems;
     }
 
     @Override
@@ -61,7 +66,7 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         try {
             H holder;
             if (convertView == null) {
@@ -73,24 +78,10 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
             }
 
             populate(holder, getItem(position));
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onClickListener(getItem(position));
-                }
-            });
-
-            convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    onLongClickListener(getItem(position));
-                    return true;
-                }
-            });
+            createIndex(convertView, position);
             return convertView;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+            throw new RuntimeException(this.getClass().getName(), ex);
         }
     }
 
@@ -104,10 +95,8 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
 
     public abstract void populate(H holder, E item);
 
-    protected void onClickListener(E item) {
-    }
+    public void createIndex(View convertView, int index) {
 
-    protected void onLongClickListener(E item) {
     }
 
     @Override
@@ -123,16 +112,25 @@ public abstract class MyAdapter<E, H> extends BaseAdapter implements Filterable 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults result = new FilterResults();
-            MyArray<E> filteredItems = getFilteredItems();
-            result.values = filteredItems;
-            result.count = filteredItems.size();
+            try {
+                MyArray<E> filteredItems = filterItems();
+                result.values = filteredItems;
+                result.count = filteredItems.size();
+            } catch (Exception ex) {
+                result.values = ex;
+            }
             return result;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            filteredItems = (MyArray<E>) results.values;
-            notifyDataSetChanged();
+            if (results.values instanceof Exception) {
+                throw new RuntimeException("application error");
+            } else {
+                filteredItems = (MyArray<E>) results.values;
+                notifyDataSetChanged();
+            }
         }
     }
 }
+

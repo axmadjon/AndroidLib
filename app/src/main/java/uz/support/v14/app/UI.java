@@ -1,4 +1,4 @@
-package uz.support.v14.util;
+package uz.support.v14.app;
 
 import android.view.View;
 

@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import uz.support.v14.R;
-import uz.support.v14.app.ContentFragment;
+import uz.support.v14.app.content.ContentFragment;
 import uz.support.v14.app.SupportActivity;
-import uz.support.v14.util.ViewSetup;
+import uz.support.v14.widget.ViewSetup;
 
 public class DemoContentFragment extends ContentFragment {
 

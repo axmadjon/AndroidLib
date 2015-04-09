@@ -1,7 +1,8 @@
-package uz.support.v14.util;
+package uz.support.v14.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RatingBar;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -67,6 +68,14 @@ public class ViewSetup {
     }
 
     public Spinner spinner(int resId) {
+        return id(resId);
+    }
+
+    public ListView listView(int resId) {
+        return id(resId);
+    }
+
+    public SwipeRefreshLayout swipeRefresh(int resId) {
         return id(resId);
     }
 }

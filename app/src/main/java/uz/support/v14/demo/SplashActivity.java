@@ -8,7 +8,7 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DemoContentFragment.open(this);
+        DemoIndexFragment.open(this);
         finish();
     }
 }

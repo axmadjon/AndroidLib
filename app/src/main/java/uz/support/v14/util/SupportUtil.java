@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcelable;
 
-import uz.support.v14.R;
-import uz.support.v14.app.ContentFragment;
-import uz.support.v14.app.IndexFragment;
-import uz.support.v14.app.Setting;
-import uz.support.v14.app.SupportFragment;
 import uz.support.v14.app.SupportActivity;
+import uz.support.v14.app.SupportFragment;
+import uz.support.v14.app.content.ContentFragment;
+import uz.support.v14.app.index.IndexFragment;
 
 public final class SupportUtil {
 
@@ -61,73 +59,14 @@ public final class SupportUtil {
     }
 
     //**********************************************************************************************
-    public static void setFragmentSetting(ContentFragment cf, Setting setting) {
-        Bundle args = cf.getArguments();
-        if (args == null) {
-            args = new Bundle();
-        }
-        if (setting == null) {
-            setting = new Setting("", R.color.project_color);
-        }
-        args.putParcelable(Setting.SETTING, setting);
-        cf.setArguments(args);
-    }
-
-    public static void setFragmentSetting(ContentFragment cf, int logo, String title) {
-        setFragmentSetting(cf, new Setting(logo, title, R.color.project_color));
-    }
-
-    //**********************************************************************************************
-
-    public static void replaceContent(Activity activity, ContentFragment cf, Setting setting) {
-        setFragmentSetting(cf, setting);
-        getSupportActivity(activity).replaceContent(cf);
-    }
-
-    public static void replaceContent(Activity activity, Class<? extends ContentFragment> cls, Setting setting) {
-        replaceContent(activity, newContentInstance(cls), setting);
-    }
-
-    public static void replaceContent(SupportFragment fragment, ContentFragment cf, Setting setting) {
-        replaceContent(fragment.getActivity(), cf, setting);
-    }
-
-    public static void replaceContent(SupportFragment fragment, Class<? extends ContentFragment> cls, Setting setting) {
-        replaceContent(fragment, newContentInstance(cls), setting);
-    }
-
-    public static void replaceContent(Activity activity, ContentFragment cf, int logo, String title) {
-        replaceContent(activity, cf, new Setting(logo, title));
-    }
-
-    public static void replaceContent(Activity activity, Class<? extends ContentFragment> cls, int logo, String title) {
-        replaceContent(activity, newContentInstance(cls), logo, title);
-    }
-
-    public static void replaceContent(SupportFragment fragment, ContentFragment cf, int logo, String title) {
-        replaceContent(fragment.getActivity(), cf, logo, title);
-    }
-
-    public static void replaceContent(SupportFragment fragment, Class<? extends ContentFragment> cls, int logo, String title) {
-        replaceContent(fragment, newContentInstance(cls), logo, title);
-    }
 
     public static void replaceContent(Activity activity, ContentFragment cf) {
-        replaceContent(activity, cf, null);
+        getSupportActivity(activity).replaceContent(cf);
     }
 
     public static void replaceContent(Activity activity, Class<? extends ContentFragment> cls) {
         replaceContent(activity, newContentInstance(cls));
     }
-
-    public static void replaceContent(SupportFragment fragment, ContentFragment cf) {
-        replaceContent(fragment.getActivity(), cf);
-    }
-
-    public static void replaceContent(SupportFragment fragment, Class<? extends ContentFragment> cls) {
-        replaceContent(fragment, newContentInstance(cls));
-    }
-
 
     //**********************************************************************************************
 
@@ -139,48 +78,7 @@ public final class SupportUtil {
         addContent(activity, newContentInstance(cls));
     }
 
-    public static void addContent(SupportFragment fragment, ContentFragment cf) {
-        addContent(fragment.getActivity(), cf);
-    }
-
-    public static void addContent(SupportFragment fragment, Class<? extends ContentFragment> cls) {
-        addContent(fragment, newContentInstance(cls));
-    }
-
     //**********************************************************************************************
-
-    public static void openContent(Activity activity, ContentFragment cf, Setting setting) {
-        setFragmentSetting(cf, setting);
-        getSupportActivity(activity).openContent(cf);
-    }
-
-    public static void openContent(Activity activity, Class<? extends ContentFragment> cls, Setting setting) {
-        openContent(activity, newContentInstance(cls), setting);
-    }
-
-    public static void openContent(SupportFragment fragment, ContentFragment cf, Setting setting) {
-        openContent(fragment.getActivity(), cf, setting);
-    }
-
-    public static void openContent(SupportFragment fragment, Class<? extends ContentFragment> cls, Setting setting) {
-        openContent(fragment, newContentInstance(cls), setting);
-    }
-
-    public static void openContent(Activity activity, ContentFragment cf, int logo, String title) {
-        openContent(activity, cf, new Setting(logo, title));
-    }
-
-    public static void openContent(Activity activity, Class<? extends ContentFragment> cls, int logo, String title) {
-        openContent(activity, newContentInstance(cls), logo, title);
-    }
-
-    public static void openContent(SupportFragment fragment, ContentFragment cf, int logo, String title) {
-        openContent(fragment.getActivity(), cf, logo, title);
-    }
-
-    public static void openContent(SupportFragment fragment, Class<? extends ContentFragment> cls, int logo, String title) {
-        openContent(fragment, newContentInstance(cls), logo, title);
-    }
 
     public static void openContent(Activity activity, ContentFragment cf) {
         getSupportActivity(activity).openContent(cf);
@@ -188,14 +86,6 @@ public final class SupportUtil {
 
     public static void openContent(Activity activity, Class<? extends ContentFragment> cls) {
         openContent(activity, newContentInstance(cls));
-    }
-
-    public static void openContent(SupportFragment fragment, ContentFragment cf) {
-        openContent(fragment.getActivity(), cf);
-    }
-
-    public static void openContent(SupportFragment fragment, Class<? extends ContentFragment> cls) {
-        openContent(fragment, newContentInstance(cls));
     }
 
     //**********************************************************************************************
@@ -234,13 +124,6 @@ public final class SupportUtil {
         return (T) f;
     }
 
-    public static Setting parcelableSetting(ContentFragment fragment) {
-        Bundle arg = fragment.getArguments();
-        if (arg == null) {
-            return new Setting();
-        }
-        return arg.getParcelable(Setting.SETTING);
-    }
 
     //**********************************************************************************************
 

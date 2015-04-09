@@ -7,9 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import uz.support.v14.R;
-import uz.support.v14.app.ContentFragment;
-import uz.support.v14.app.IndexContentFragment;
-import uz.support.v14.util.ViewSetup;
+import uz.support.v14.app.index.IndexContentFragment;
+import uz.support.v14.widget.ViewSetup;
 
 public class DemoIndexContentFragment extends IndexContentFragment {
 
@@ -24,7 +23,7 @@ public class DemoIndexContentFragment extends IndexContentFragment {
         vsRoot.button(R.id.btn_next_content).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openContent(DemoContentFragment2.class);
+                openContent(DemoListSwipeContent.class);
             }
         });
     }

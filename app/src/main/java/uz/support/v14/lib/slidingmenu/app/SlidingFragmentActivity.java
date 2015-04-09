@@ -1,10 +1,14 @@
 package uz.support.v14.lib.slidingmenu.app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import uz.support.v14.lib.slidingmenu.SlidingMenu;
 
@@ -142,11 +146,45 @@ public class SlidingFragmentActivity extends ActionBarActivity implements Slidin
     /* (non-Javadoc)
      * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
      */
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        View v = getCurrentFocus();
+
+        if (v instanceof EditText) {
+            View w = getCurrentFocus();
+            int scrcoords[] = new int[2];
+            w.getLocationOnScreen(scrcoords);
+            float x = event.getRawX() + w.getLeft() - scrcoords[0];
+            float y = event.getRawY() + w.getTop() - scrcoords[1];
+
+            if (event.getAction() == MotionEvent.ACTION_UP && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w.getBottom())) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+            }
+            return true;
+        }
+        return super.dispatchTouchEvent(event);
+    }
+
+    protected void hideSoftKeyboard() {
+        View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
+    }
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         boolean b = mHelper.onKeyUp(keyCode, event);
         if (b) return b;
         return super.onKeyUp(keyCode, event);
+    }
+
+    public void setOnSlidingListener(SlidingMenu.OnSlidingListener slidingListener) {
+        getSlidingMenu().setOnSlidingListener(slidingListener);
     }
 
 }
